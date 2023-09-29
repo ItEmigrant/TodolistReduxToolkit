@@ -23,16 +23,13 @@ const slice = createSlice({
 export const loginTC =
   (data: LoginParamsType): AppThunk =>
   (dispatch) => {
-
-    dispatch(appActions.setAppStatus({status:"loading"}))
     authAPI
       .login(data)
       .then((res) => {
         if (res.data.resultCode === 0) {
           dispatch(authActions.setIsLoggedInAC({ isLoggedIn: true }));
-          dispatch(appActions.setAppStatus({status:"succeeded"}))
-
-
+          dispatch(appActions.setAppStatus({ status: "succeeded" }));
+          /*    dispatch(appActions.setAppStatus({ status: "succeeded" }));*/
         } else {
           handleServerAppError(res.data, dispatch);
         }
@@ -42,13 +39,13 @@ export const loginTC =
       });
   };
 export const logoutTC = (): AppThunk => (dispatch) => {
-  dispatch(appActions.setAppStatus({status:"loading"}))
+  dispatch(appActions.setAppStatus({ status: "loading" }));
   authAPI
     .logout()
     .then((res) => {
       if (res.data.resultCode === 0) {
         dispatch(authActions.setIsLoggedInAC({ isLoggedIn: false }));
-        dispatch(appActions.setAppStatus({status:"succeeded"}))
+        dispatch(appActions.setAppStatus({ status: "succeeded" }));
       } else {
         handleServerAppError(res.data, dispatch);
       }
