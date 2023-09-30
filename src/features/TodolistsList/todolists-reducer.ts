@@ -9,16 +9,51 @@ const slice = createSlice({
   name: "todolists",
   initialState: [] as TodolistDomainType[],
   reducers: {
-    removeTodolist: (state, action: PayloadAction<{ id: string }>) => {
+    removeTodolist: (
+      state,
+      action: PayloadAction<{
+        id: string;
+      }>,
+    ) => {
       // state.filter((tl) => tl.id !== action.payload.id);
       const index = state.findIndex((todolists) => todolists.id === action.payload.id);
       if (index !== -1) state.splice(index, 1);
     },
-    addTodolist: (state, action: PayloadAction<{ todolist: TodolistType }>) => {
+    addTodolist: (
+      state,
+      action: PayloadAction<{
+        todolist: TodolistType;
+      }>,
+    ) => {
       //  return [{ ...action.todolist, filter: "all", entityStatus: "idle" }, ...state];
       const newTodolist: TodolistDomainType = { ...action.payload.todolist, filter: "all", entityStatus: "idle" };
       state.unshift(newTodolist);
       //state.unshift({ ...action.payload.todolist, filter: "all", entityStatus: "idle" })
+    },
+    changeTodolistTitle: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        title: string;
+      }>,
+    ) => {
+      /* return state.map((tl) => (tl.id === action.id ? { ...tl, title: action.title } : tl))*/
+      /* const index = state.findIndex((todolists) => todolists.id === action.payload.id);
+       if (index !== -1) state[index].title = action.payload.title;*/
+      const ourTodo = state.find((t) => t.id === action.payload.id);
+      if (ourTodo) {
+        ourTodo.title = action.payload.title;
+      }
+    },
+    changeTodolistFilter: (state, action: PayloadAction<{ id: string; filter: FilterValuesType }>) => {
+      /*return state.map((tl) => (tl.id === action.id ? { ...tl, filter: action.filter } : tl))
+       */
+      const index = state.findIndex((tl) => tl.id === action.payload.id);
+     /* state[index].filter = action.payload.filter;*/
+      const ourTodo = state.find((tl) => tl.id === action.payload.id);
+      if (ourTodo) {
+        ourTodo.filter = action.payload.filter;
+      }
     },
   },
 });
@@ -28,12 +63,7 @@ const slice = createSlice({
   action: ActionsType,
 ): Array<TodolistDomainType> => {
   switch (action.type) {
-   
-    case "ADD-TODOLIST":
-      return [{ ...action.todolist, filter: "all", entityStatus: "idle" }, ...state];
-
-    case "CHANGE-TODOLIST-TITLE":
-      return state.map((tl) => (tl.id === action.id ? { ...tl, title: action.title } : tl));
+    
     case "CHANGE-TODOLIST-FILTER":
       return state.map((tl) => (tl.id === action.id ? { ...tl, filter: action.filter } : tl));
     case "CHANGE-TODOLIST-ENTITY-STATUS":
@@ -51,13 +81,6 @@ const slice = createSlice({
 
 // actions
 
-export const addTodolistAC = (todolist: TodolistType) => ({ type: "ADD-TODOLIST", todolist }) as const;
-export const changeTodolistTitleAC = (id: string, title: string) =>
-  ({
-    type: "CHANGE-TODOLIST-TITLE",
-    id,
-    title,
-  }) as const;
 export const changeTodolistFilterAC = (id: string, filter: FilterValuesType) =>
   ({
     type: "CHANGE-TODOLIST-FILTER",
