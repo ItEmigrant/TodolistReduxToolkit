@@ -3,16 +3,32 @@ import { Dispatch } from "redux";
 import { appActions, RequestStatusType } from "app/app-reducer";
 import { handleServerNetworkError } from "utils/error-utils";
 import { AppThunk } from "app/store";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-const initialState: Array<TodolistDomainType> = [];
+const slice = createSlice({
+  name: "todolists",
+  initialState: [] as TodolistDomainType[],
+  reducers: {
+    removeTodolist: (state, action: PayloadAction<{ id: string }>) => {
+      // state.filter((tl) => tl.id !== action.payload.id);
+      const index = state.findIndex((todolists) => todolists.id === action.payload.id);
+      if (index !== -1) state.splice(index, 1);
+    },
+    addTodolist: (state, action: PayloadAction<{ todolist: TodolistType }>) => {
+      //  return [{ ...action.todolist, filter: "all", entityStatus: "idle" }, ...state];
+      const newTodolist: TodolistDomainType = { ...action.payload.todolist, filter: "all", entityStatus: "idle" };
+      state.unshift(newTodolist);
+      //state.unshift({ ...action.payload.todolist, filter: "all", entityStatus: "idle" })
+    },
+  },
+});
 
-export const todolistsReducer = (
+/*export const todolistsReducer = (
   state: Array<TodolistDomainType> = initialState,
   action: ActionsType,
 ): Array<TodolistDomainType> => {
   switch (action.type) {
-    case "REMOVE-TODOLIST":
-      return state.filter((tl) => tl.id != action.id);
+   
     case "ADD-TODOLIST":
       return [{ ...action.todolist, filter: "all", entityStatus: "idle" }, ...state];
 
@@ -31,10 +47,10 @@ export const todolistsReducer = (
     default:
       return state;
   }
-};
+};*/
 
 // actions
-export const removeTodolistAC = (id: string) => ({ type: "REMOVE-TODOLIST", id }) as const;
+
 export const addTodolistAC = (todolist: TodolistType) => ({ type: "ADD-TODOLIST", todolist }) as const;
 export const changeTodolistTitleAC = (id: string, title: string) =>
   ({
@@ -120,3 +136,6 @@ export type TodolistDomainType = TodolistType & {
   entityStatus: RequestStatusType;
 };
 type ThunkDispatch = any;
+
+export const todolistsReducer = slice.reducer;
+export const todolistsActions = slice.actions;
