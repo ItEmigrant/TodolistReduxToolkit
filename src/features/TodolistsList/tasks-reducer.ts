@@ -3,10 +3,36 @@ import { Dispatch } from "redux";
 import { AppThunk } from "app/store";
 import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app-reducer";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { todolistsActions } from "features/TodolistsList/todolists-reducer";
 
-const initialState: TasksStateType = {};
+const slice = createSlice({
+  name: "tasks",
+  initialState: {} as TasksStateType,
+  reducers: {
+    removeTask: (state, action: PayloadAction<{ taskId: string; todolistId: string }>) => {
+      /* return {
+         ...state,
+         [action.todolistId]: state[action.todolistId].filter((t) => t.id != action.taskId),
+       }*/
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(todolistsActions.addTodolist, (state, action) => {
+        // return { ...state, [action.todolist.id]: [] };
+        state[action.payload.todolist.id] = [];
+      })
+      .addCase(todolistsActions.removeTodolist, (state, action) => {
+        // const copyState = { ...state };
+        //delete copyState[action.id];
+        // return copyState;
+        delete state[action.payload.id];
+      });
+  },
+});
 
-export const tasksReducer = (state: TasksStateType = initialState, action: ActionsType): TasksStateType => {
+/*export const tasksReducer = (state: TasksStateType = initialState, action: ActionsType): TasksStateType => {
   switch (action.type) {
     case "REMOVE-TASK":
       return {
@@ -25,12 +51,8 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
           t.id === action.taskId ? { ...t, ...action.model } : t,
         ),
       };
-    case "ADD-TODOLIST":
-      return { ...state, [action.todolist.id]: [] };
-    case "REMOVE-TODOLIST":
-      const copyState = { ...state };
-      delete copyState[action.id];
-      return copyState;
+
+
     case "SET-TODOLISTS": {
       const copyState = { ...state };
       action.todolists.forEach((tl: any) => {
@@ -43,7 +65,7 @@ export const tasksReducer = (state: TasksStateType = initialState, action: Actio
     default:
       return state;
   }
-};
+};*/
 
 // actions
 export const removeTaskAC = (taskId: string, todolistId: string) =>
@@ -126,6 +148,9 @@ export const updateTaskTC =
         handleServerNetworkError(error, dispatch);
       });
   };
+
+export const tasksReducer = slice.reducer;
+export const tasksActions = slice.actions;
 
 // types
 export type UpdateDomainTaskModelType = {
