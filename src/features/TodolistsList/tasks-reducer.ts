@@ -81,7 +81,7 @@ const slice = createSlice({
         // copyState[tl.id] = [];
         action.payload.todolists.forEach((tl) => (state[tl.id] = []));
       })
-      .addCase(todolistsActions.clearTodosData, (state) => {
+      .addCase(todolistsActions.clearTodosData, () => {
         return {};
       });
   },
