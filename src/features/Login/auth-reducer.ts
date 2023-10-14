@@ -47,7 +47,7 @@ export const logoutTC = (): AppThunk => (dispatch) => {
       if (res.data.resultCode === 0) {
         dispatch(authActions.setIsLoggedInAC({ isLoggedIn: false }));
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
-        dispatch(clearTasksTodos({ tasks: {}, todolists: [] }));
+        dispatch(clearTasksTodos());
       } else {
         handleServerAppError(res.data, dispatch);
       }

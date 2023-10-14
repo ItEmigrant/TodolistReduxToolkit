@@ -75,8 +75,8 @@ const slice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(clearTasksTodos, (_state, action) => {
-      return action.payload.todolists;
+    builder.addCase(clearTasksTodos, () => {
+      return [];
     });
   },
 });
