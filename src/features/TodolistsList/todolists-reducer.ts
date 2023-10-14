@@ -3,8 +3,9 @@ import { appActions, RequestStatusType } from "app/app-reducer";
 import { handleServerNetworkError } from "utils/error-utils";
 import { AppThunk } from "app/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { fetchTasksTC } from "features/TodolistsList/tasks-reducer";
+
 import { clearTasksTodos } from "Common/Actions/commonActions";
+import { tasksThunks } from "features/TodolistsList/tasks-reducer";
 
 const slice = createSlice({
   name: "todolists",
@@ -95,7 +96,7 @@ export const fetchTodolistsTC = (): AppThunk => {
       })
       .then((todos) => {
         todos.forEach((tl) => {
-          dispatch(fetchTasksTC(tl.id));
+          dispatch(tasksThunks.fetchTasks(tl.id));
         });
       })
       .catch((error) => {

@@ -2,9 +2,9 @@ import { TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelTy
 import { AppThunk } from "app/store";
 import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
 import { appActions } from "app/app-reducer";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { todolistsActions } from "features/TodolistsList/todolists-reducer";
-import { clearTasksTodos} from "Common/Actions/commonActions";
+import { clearTasksTodos } from "Common/Actions/commonActions";
 
 const slice = createSlice({
   name: "tasks",
@@ -59,13 +59,13 @@ const slice = createSlice({
          ourTask = { ...ourTask, ...action.payload.model };
        }*/ //???
     },
-    setTasks: (state, action: PayloadAction<{ tasks: Array<TaskType>; todolistId: string }>) => {
-      //return { ...state, [action.todolistId]: action.tasks };
-      state[action.payload.todolistId] = action.payload.tasks;
-    },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchTasks.fulfilled, (state, action) => {
+        //return { ...state, [action.todolistId]: action.tasks };
+        state[action.payload.todolistId] = action.payload.tasks;
+      })
       .addCase(todolistsActions.addTodolist, (state, action) => {
         // return { ...state, [action.todolist.id]: [] };
         state[action.payload.todolist.id] = [];
@@ -89,7 +89,16 @@ const slice = createSlice({
 });
 
 // thunks
-export const fetchTasksTC =
+
+const fetchTasks = createAsyncThunk("tasks/fetchTasks", async (todolistId: string, thunkAPI) => {
+  const { dispatch } = thunkAPI;
+  dispatch(appActions.setAppStatus({ status: "loading" }));
+  const res = await todolistsAPI.getTasks(todolistId);
+  dispatch(appActions.setAppStatus({ status: "succeeded" }));
+  return { tasks: res.data.items, todolistId };
+});
+
+/*export const _fetchTasksTC =
   (todolistId: string): AppThunk =>
   (dispatch) => {
     dispatch(appActions.setAppStatus({ status: "loading" }));
@@ -98,7 +107,8 @@ export const fetchTasksTC =
       dispatch(tasksActions.setTasks({ tasks, todolistId }));
       dispatch(appActions.setAppStatus({ status: "succeeded" }));
     });
-  };
+  };*/
+
 export const removeTaskTC =
   (taskId: string, todolistId: string): AppThunk =>
   (dispatch) => {
@@ -107,6 +117,7 @@ export const removeTaskTC =
       dispatch(action);
     });
   };
+
 export const addTaskTC =
   (title: string, todolistId: string): AppThunk =>
   (dispatch) => {
@@ -163,6 +174,7 @@ export const updateTaskTC =
 
 export const tasksReducer = slice.reducer;
 export const tasksActions = slice.actions;
+export const tasksThunks = { fetchTasks };
 
 // types
 export type UpdateDomainTaskModelType = {
