@@ -66,6 +66,9 @@ const slice = createSlice({
         //return { ...state, [action.todolistId]: action.tasks };
         state[action.payload.todolistId] = action.payload.tasks;
       })
+      .addCase(fetchTasks.rejected, (state, action) => {
+
+      })
       .addCase(todolistsActions.addTodolist, (state, action) => {
         // return { ...state, [action.todolist.id]: [] };
         state[action.payload.todolist.id] = [];
@@ -91,11 +94,15 @@ const slice = createSlice({
 // thunks
 
 const fetchTasks = createAsyncThunk("tasks/fetchTasks", async (todolistId: string, thunkAPI) => {
-  const { dispatch } = thunkAPI;
-  dispatch(appActions.setAppStatus({ status: "loading" }));
-  const res = await todolistsAPI.getTasks(todolistId);
-  dispatch(appActions.setAppStatus({ status: "succeeded" }));
-  return { tasks: res.data.items, todolistId };
+  const { dispatch, rejectWithValue } = thunkAPI;
+  try {
+    dispatch(appActions.setAppStatus({ status: "loading" }));
+    const res = await todolistsAPI.getTasks(todolistId);
+    dispatch(appActions.setAppStatus({ status: "succeeded" }));
+    return { tasks: res.data.items, todolistId };
+  } catch (err) {
+    return rejectWithValue(" Error");
+  }
 });
 
 /*export const _fetchTasksTC =
