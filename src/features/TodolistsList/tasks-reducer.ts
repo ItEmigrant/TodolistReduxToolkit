@@ -7,12 +7,13 @@ import {
   UpdateTaskModelType,
 } from "api/todolists-api";
 import { AppThunk } from "app/store";
-import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
+import { handleServerNetworkError } from "utils/NetworkError";
 import { appActions } from "app/app-reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { todolistsActions } from "features/TodolistsList/todolists-reducer";
 import { clearTasksTodos } from "Common/Actions/commonActions";
 import { createAppAsyncThunk } from "utils/createAppAsyncThunk";
+import { serverAppError } from "utils/ServerAppError";
 
 const slice = createSlice({
   name: "tasks",
@@ -113,6 +114,12 @@ const slice = createSlice({
   },
 });
 
+enum ResultCodeEnum {
+  success = 0,
+  error = 1,
+  captcha = 10,
+}
+
 // thunks
 
 const fetchTasks = createAppAsyncThunk<
@@ -166,11 +173,11 @@ const addTask = createAppAsyncThunk<
   try {
     dispatch(appActions.setAppStatus({ status: "loading" }));
     const res = await todolistsAPI.createTask(arg.todolistId, arg.title);
-    if (res.data.resultCode === 0) {
+    if (res.data.resultCode === ResultCodeEnum.success) {
       dispatch(appActions.setAppStatus({ status: "succeeded" }));
       return { task: res.data.data.item };
     } else {
-      handleServerAppError(res.data, dispatch);
+      serverAppError(res.data, dispatch);
       return rejectWithValue(null);
     }
   } catch (err) {
@@ -189,7 +196,7 @@ const addTask = createAppAsyncThunk<
           dispatch(tasksActions.addTask({ task: res.data.data.item }));
           dispatch(appActions.setAppStatus({ status: "succeeded" }));
         } else {
-          handleServerAppError(res.data, dispatch);
+          serverAppError(res.data, dispatch);
         }
       })
       .catch((error) => {
@@ -219,10 +226,10 @@ const updateTask = createAppAsyncThunk<ArgUpdateTask, ArgUpdateTask>(
         ...arg.domainModel,
       };
       const res = await todolistsAPI.updateTask(arg.todolistId, arg.taskId, apiModel);
-      if (res.data.resultCode === 0) {
+      if (res.data.resultCode === ResultCodeEnum.success) {
         return arg;
       } else {
-        handleServerAppError(res.data, dispatch);
+        serverAppError(res.data, dispatch);
         return rejectWithValue(null);
       }
     } catch (err) {
@@ -259,7 +266,7 @@ const updateTask = createAppAsyncThunk<ArgUpdateTask, ArgUpdateTask>(
           const action = tasksActions.updateTask({ taskId, model: domainModel, todolistId });
           dispatch(action);
         } else {
-          handleServerAppError(res.data, dispatch);
+          serverAppError(res.data, dispatch);
         }
       })
       .catch((error) => {

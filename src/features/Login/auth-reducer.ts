@@ -1,9 +1,10 @@
 import { authAPI, LoginParamsType } from "api/todolists-api";
-import { handleServerAppError, handleServerNetworkError } from "utils/error-utils";
+import {handleServerNetworkError } from "utils/NetworkError";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppThunk } from "app/store";
 import { appActions } from "app/app-reducer";
 import { clearTasksTodos } from "Common/Actions/commonActions";
+import { serverAppError } from "utils/ServerAppError";
 
 const slice = createSlice({
   name: "auth",
@@ -32,7 +33,7 @@ export const loginTC =
           dispatch(appActions.setAppStatus({ status: "succeeded" }));
           /*    dispatch(appActions.setAppStatus({ status: "succeeded" }));*/
         } else {
-          handleServerAppError(res.data, dispatch);
+          serverAppError(res.data, dispatch);
         }
       })
       .catch((error) => {
@@ -49,7 +50,7 @@ export const logoutTC = (): AppThunk => (dispatch) => {
         dispatch(appActions.setAppStatus({ status: "succeeded" }));
         dispatch(clearTasksTodos());
       } else {
-        handleServerAppError(res.data, dispatch);
+        serverAppError(res.data, dispatch);
       }
     })
     .catch((error) => {
