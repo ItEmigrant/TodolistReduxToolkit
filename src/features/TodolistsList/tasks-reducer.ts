@@ -1,19 +1,13 @@
-import {
-  ArgUpdateTask,
-  TaskPriorities,
-  TaskStatuses,
-  TaskType,
-  todolistsAPI,
-  UpdateTaskModelType,
-} from "api/todolists-api";
 import { AppThunk } from "app/store";
-import { handleServerNetworkError } from "utils/NetworkError";
+import { handleServerNetworkError } from "Common/utils/NetworkError";
 import { appActions } from "app/app-reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { todolistsActions } from "features/TodolistsList/todolists-reducer";
 import { clearTasksTodos } from "Common/Actions/commonActions";
-import { createAppAsyncThunk } from "utils/createAppAsyncThunk";
-import { serverAppError } from "utils/ServerAppError";
+import { createAppAsyncThunk } from "Common/utils/createAppAsyncThunk";
+import { serverAppError } from "Common/utils/ServerAppError";
+import { ArgUpdateTask, TaskType, todolistsAPI, UpdateTaskModelType } from "features/TodolistsList/todolistApi";
+import { TaskPriorities, TaskStatuses } from "Common/Enum/enum";
 
 const slice = createSlice({
   name: "tasks",
@@ -121,7 +115,6 @@ enum ResultCodeEnum {
 }
 
 // thunks
-
 const fetchTasks = createAppAsyncThunk<
   {
     tasks: TaskType[];
