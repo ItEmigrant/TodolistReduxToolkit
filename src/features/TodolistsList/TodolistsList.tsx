@@ -10,13 +10,17 @@ import {
   TodolistDomainType,
   todolistsActions,
 } from "./todolists-reducer";
-import { removeTaskTC, TasksStateType, tasksThunks } from "./tasks-reducer";
+import { TasksStateType, tasksThunks } from "./tasks-reducer";
 import { Grid, Paper } from "@mui/material";
 import { AddItemForm } from "Common/components/AddItemForm/AddItemForm";
 import { Todolist } from "./Todolist/Todolist";
 import { Navigate } from "react-router-dom";
 import { useAppDispatch } from "app/useAppDispatch";
-import { selectTodoLists, selectTodosIsLoggedIn, selectTodosTasks } from "features/TodolistsList/todolistsListsSelectors";
+import {
+  selectTodoLists,
+  selectTodosIsLoggedIn,
+  selectTodosTasks,
+} from "features/TodolistsList/todolistsListsSelectors";
 import { TaskStatuses } from "Common/Enum/enum";
 
 type PropsType = {
@@ -38,9 +42,8 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
     dispatch(thunk);
   }, []);
 
-  const removeTask = useCallback(function (id: string, todolistId: string) {
-    const thunk = removeTaskTC(id, todolistId);
-    dispatch(thunk);
+  const removeTask = useCallback(function (taskId: string, todolistId: string) {
+    dispatch(tasksThunks.removeTask({taskId, todolistId}));
   }, []);
 
   const addTask = useCallback(function (title: string, todolistId: string) {
@@ -52,7 +55,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   }, []);
 
   const changeTaskTitle = useCallback(function (taskId: string, newTitle: string, todolistId: string) {
-    dispatch(tasksThunks.updateTask({ taskId, domainModel: {title:newTitle}, todolistId }));
+    dispatch(tasksThunks.updateTask({ taskId, domainModel: { title: newTitle }, todolistId }));
   }, []);
 
   const changeFilter = useCallback(function (filter: FilterValuesType, id: string) {
