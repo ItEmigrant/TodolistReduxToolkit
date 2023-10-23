@@ -70,7 +70,7 @@ const slice = createSlice({
   },
 });
 
-enum ResultCodeEnum {
+export enum ResultCodeEnum {
   success = 0,
   error = 1,
   captcha = 10,
@@ -96,7 +96,7 @@ const fetchTasks = createAppAsyncThunk<
   }
 });
 
-const removeTask = createAppAsyncThunk<any, { taskId: string; todolistId: string }>(
+const removeTask = createAppAsyncThunk<{ taskId: string; todolistId: string }, { taskId: string; todolistId: string }>(
   `${slice.name}/removeTasks`,
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
