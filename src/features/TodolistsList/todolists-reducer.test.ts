@@ -1,4 +1,10 @@
-import { FilterValuesType, TodolistDomainType, todolistsActions, todolistsReducer } from "./todolists-reducer";
+import {
+  FilterValuesType,
+  TodolistDomainType,
+  todolistsActions,
+  todolistsReducer,
+  todoListsThunks,
+} from "./todolists-reducer";
 import { v1 } from "uuid";
 import { RequestStatusType } from "app/app-reducer";
 import { TodolistType } from "features/TodolistsList/todolistApi";
@@ -31,7 +37,10 @@ beforeEach(() => {
 });
 
 test("correct todolist should be removed", () => {
-  const endState = todolistsReducer(startState, todolistsActions.removeTodolist({ id: todolistId1 }));
+  const endState = todolistsReducer(
+    startState,
+    todoListsThunks.removeTodolist.fulfilled(todolistId1, "requestId", { id: "todolistId1" }),
+  );
 
   expect(endState.length).toBe(1);
   expect(endState[0].id).toBe(todolistId2);
@@ -45,7 +54,7 @@ test("correct todolist should be added", () => {
     order: 0,
   };
 
-  const endState = todolistsReducer(startState, todolistsActions.addTodolist({ todolist }));
+  const endState = todolistsReducer(startState, todoListsThunks.addTodolist.fulfilled({ todolist }, 'requestId', {title: 'New Todolist'}));
 
   expect(endState.length).toBe(3);
   expect(endState[0].title).toBe(todolist.title);
