@@ -7,7 +7,6 @@ import { AppRootStateType } from "./store";
 import { initializeAppTC, RequestStatusType } from "./app-reducer";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Login } from "features/Login/Login";
-import { logoutTC } from "features/Login/auth-reducer";
 import {
   AppBar,
   Button,
@@ -21,6 +20,7 @@ import {
 import { Menu } from "@mui/icons-material";
 import { useAppDispatch } from "app/useAppDispatch";
 import { selectIsInitialized, selectIsLoggedIn, selectStatus } from "app/appSelectors";
+import { authThunks } from "features/Login/auth-reducer";
 
 type PropsType = {
   demo?: boolean;
@@ -38,7 +38,7 @@ function App({ demo = false }: PropsType) {
   }, []);
 
   const logoutHandler = useCallback(() => {
-    dispatch(logoutTC());
+    dispatch(authThunks.logout());
   }, []);
 
   if (!isInitialized) {
