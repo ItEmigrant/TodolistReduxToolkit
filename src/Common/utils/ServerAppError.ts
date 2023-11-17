@@ -1,7 +1,7 @@
 import { Dispatch } from "redux";
 import { appActions } from "app/app-reducer";
-import { ResponseType } from "Common/types/commonTypes";
-export const serverAppError = <D>(data:ResponseType<D>, dispatch: Dispatch) => {
+import {  BaseResponseType } from "Common/types/commonTypes";
+export const serverAppError = <D>(data: BaseResponseType<D>, dispatch: Dispatch) => {
   if (data.messages.length) {
     /*dispatch(setAppErrorAC(data.messages[0]));*/
     dispatch(appActions.setAppError({ error: data.messages[0] }));
