@@ -53,8 +53,7 @@ const login = createAppAsyncThunk<
   {
     isLoggedIn: boolean;
   },
-  LoginParamsType
->(`${slice.name}/login`, async (arg, thunkAPI) => {
+  LoginParamsType>(`${slice.name}/login`, async (arg, thunkAPI) => {
   const { dispatch, rejectWithValue } = thunkAPI;
   try {
     dispatch(appActions.setAppStatus({ status: "loading" }));
@@ -66,7 +65,7 @@ const login = createAppAsyncThunk<
       /*    dispatch(appActions.setAppStatus({ status: "succeeded" }));*/
     } else {
       serverAppError(res.data, dispatch);
-      return rejectWithValue(null);
+      return rejectWithValue(res.data);
     }
   } catch (err) {
     handleServerNetworkError(err, dispatch);
