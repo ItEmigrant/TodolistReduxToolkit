@@ -64,7 +64,7 @@ const login = createAppAsyncThunk<
       return { isLoggedIn: true };
       /*    dispatch(appActions.setAppStatus({ status: "succeeded" }));*/
     } else {
-      serverAppError(res.data, dispatch);
+      serverAppError(res.data, dispatch, false);
       return rejectWithValue(res.data);
     }
   } catch (err) {

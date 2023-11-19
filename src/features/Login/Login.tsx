@@ -21,16 +21,16 @@ export const Login = () => {
 
   const formik = useFormik({
     validate: (values) => {
-      if (!values.email) {
-        return {
-          email: "Email is required",
-        };
-      }
-      if (!values.password) {
-        return {
-          password: "Password is required",
-        };
-      }
+       if (!values.email) {
+         return {
+           email: "Email is required",
+         };
+       }
+       if (!values.password) {
+         return {
+           password: "Password is required",
+         };
+       }
     },
     initialValues: {
       email: "",
@@ -41,7 +41,6 @@ export const Login = () => {
       dispatch(authThunks.login(values))
         .unwrap()
         .catch((err: BaseResponseType) => {
-          console.log(err);
           err.fieldsErrors.forEach((fieldsError) => formikHelpers.setFieldError(fieldsError.field, fieldsError.error));
         });
     },
