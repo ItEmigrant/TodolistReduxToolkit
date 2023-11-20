@@ -41,7 +41,7 @@ export const Login = () => {
       dispatch(authThunks.login(values))
         .unwrap()
         .catch((err: BaseResponseType) => {
-          err.fieldsErrors.forEach((fieldsError) => formikHelpers.setFieldError(fieldsError.field, fieldsError.error));
+          err.fieldsErrors?.forEach((fieldsError) => formikHelpers.setFieldError(fieldsError.field, fieldsError.error));
         });
     },
   });

@@ -38,7 +38,7 @@ const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(
       if (res.data.resultCode === ResultCodeEnum.success) {
         return { isLoggedIn: true };
       } else {
-       // serverAppError(res.data, dispatch);
+        // serverAppError(res.data, dispatch);
         return rejectWithValue(null);
       }
     } catch (err) {
@@ -53,7 +53,8 @@ const login = createAppAsyncThunk<
   {
     isLoggedIn: boolean;
   },
-  LoginParamsType>(`${slice.name}/login`, async (arg, thunkAPI) => {
+  LoginParamsType
+>(`${slice.name}/login`, async (arg, thunkAPI) => {
   const { dispatch, rejectWithValue } = thunkAPI;
   try {
     dispatch(appActions.setAppStatus({ status: "loading" }));
@@ -64,7 +65,9 @@ const login = createAppAsyncThunk<
       return { isLoggedIn: true };
       /*    dispatch(appActions.setAppStatus({ status: "succeeded" }));*/
     } else {
-      serverAppError(res.data, dispatch, false);
+      const isShowAppError = !res.data.fieldsErrors.length;
+
+      serverAppError(res.data, dispatch, isShowAppError);
       return rejectWithValue(res.data);
     }
   } catch (err) {
