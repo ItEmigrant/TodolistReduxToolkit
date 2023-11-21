@@ -18,9 +18,10 @@ import {
   Typography,
 } from "@mui/material";
 import { Menu } from "@mui/icons-material";
-import { useAppDispatch } from "app/useAppDispatch";
 import { selectIsInitialized, selectIsLoggedIn, selectStatus } from "app/appSelectors";
 import { authThunks } from "features/Login/auth-reducer";
+
+import { useActions } from "Common/hooks/useActions";
 
 type PropsType = {
   demo?: boolean;
@@ -31,14 +32,16 @@ function App({ demo = false }: PropsType) {
   const isInitialized = useSelector<AppRootStateType, boolean>(selectIsInitialized);
   const isLoggedIn = useSelector<AppRootStateType, boolean>(selectIsLoggedIn);
 
-  const dispatch = useAppDispatch();
+  
+  const { initializeApp, logout } = useActions(authThunks);
 
   useEffect(() => {
-    dispatch(authThunks.initializeApp());
+    //dispatch(authThunks.initializeApp());
+    initializeApp();
   }, []);
 
   const logoutHandler = useCallback(() => {
-    dispatch(authThunks.logout());
+    logout();
   }, []);
 
   if (!isInitialized) {

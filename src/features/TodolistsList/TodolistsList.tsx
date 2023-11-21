@@ -14,6 +14,7 @@ import {
   selectTodosTasks,
 } from "features/TodolistsList/todolistsListsSelectors";
 import { TaskStatuses } from "Common/Enum/enum";
+import { useActions } from "Common/hooks/useActions";
 
 type PropsType = {
   demo?: boolean;
@@ -25,13 +26,13 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   const isLoggedIn = useSelector<AppRootStateType, boolean>(selectTodosIsLoggedIn);
 
   const dispatch = useAppDispatch();
+  const { addTodolist, removeTodolist, fetchTodolist, changeTodolistTitle } = useActions(todoListsThunks);
 
   useEffect(() => {
     if (demo || !isLoggedIn) {
       return;
     }
-    const thunk = todoListsThunks.fetchTodolist();
-    dispatch(thunk);
+    fetchTodolist();
   }, []);
 
   const removeTask = useCallback(function (taskId: string, todolistId: string) {
@@ -54,17 +55,17 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
     dispatch(todolistsActions.changeTodolistFilter({ id, filter }));
   }, []);
 
-  const removeTodolist = useCallback(function (id: string) {
-    dispatch(todoListsThunks.removeTodolist({ id }));
+  const removeTodolistCB = useCallback(function (id: string) {
+   removeTodolist({ id })
   }, []);
 
-  const changeTodolistTitle = useCallback(function (id: string, title: string) {
-    dispatch(todoListsThunks.changeTodolistTitle({ id, title }));
+  const changeTodolistTitleCB = useCallback(function (id: string, title: string) {
+    changeTodolistTitle({ id, title })
   }, []);
 
-  const addTodolist = useCallback(
+  const addTodolistCB = useCallback(
     (title: string) => {
-      dispatch(todoListsThunks.addTodolist({ title }));
+     addTodolist({ title })
     },
     [dispatch],
   );
@@ -76,7 +77,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   return (
     <>
       <Grid container style={{ padding: "20px" }}>
-        <AddItemForm addItem={addTodolist} />
+        <AddItemForm addItem={addTodolistCB} />
       </Grid>
       <Grid container spacing={3}>
         {todolists.map((tl) => {
@@ -92,9 +93,9 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
                   changeFilter={changeFilter}
                   addTask={addTask}
                   changeTaskStatus={changeStatus}
-                  removeTodolist={removeTodolist}
+                  removeTodolist={removeTodolistCB}
                   changeTaskTitle={changeTaskTitle}
-                  changeTodolistTitle={changeTodolistTitle}
+                  changeTodolistTitle={changeTodolistTitleCB}
                   demo={demo}
                 />
               </Paper>
