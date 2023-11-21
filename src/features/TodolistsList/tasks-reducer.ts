@@ -7,6 +7,7 @@ import { createAppAsyncThunk } from "Common/utils/createAppAsyncThunk";
 import { serverAppError } from "Common/utils/ServerAppError";
 import { ArgUpdateTask, TaskType, todolistsAPI, UpdateTaskModelType } from "features/TodolistsList/todolistApi";
 import { TaskPriorities, TaskStatuses } from "Common/Enum/enum";
+import { thunkTryCatch } from "Common/utils/ThunkTryCatch";
 
 const slice = createSlice({
   name: "tasks",
@@ -121,22 +122,18 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, { todolistId: string; ti
   `${slice.name}/addTasks`,
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
-    try {
-      dispatch(appActions.setAppStatus({ status: "loading" }));
+    return thunkTryCatch(thunkAPI, async () => {
       const res = await todolistsAPI.createTask(arg.todolistId, arg.title);
       if (res.data.resultCode === ResultCodeEnum.success) {
-        dispatch(appActions.setAppStatus({ status: "succeeded" }));
         return { task: res.data.data.item };
       } else {
         serverAppError(res.data, dispatch);
         return rejectWithValue(null);
       }
-    } catch (err) {
-      handleServerNetworkError(err, dispatch);
-      return rejectWithValue(null);
-    }
+    });
   },
 );
+
 const updateTask = createAppAsyncThunk<ArgUpdateTask, ArgUpdateTask>(
   `${slice.name}/updateTasks`,
   async (arg, thunkAPI) => {

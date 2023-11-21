@@ -6,6 +6,7 @@ import { serverAppError } from "Common/utils/ServerAppError";
 import { authAPI, LoginParamsType } from "features/Login/LoginApi";
 import { createAppAsyncThunk } from "Common/utils/createAppAsyncThunk";
 import { ResultCodeEnum } from "features/TodolistsList/tasks-reducer";
+import { thunkTryCatch } from "Common/utils/ThunkTryCatch";
 
 const slice = createSlice({
   name: "auth",
@@ -33,6 +34,25 @@ const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(
   `${slice.name}/initializeApp`,
   async (_, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
+    return thunkTryCatch(thunkAPI, async () => {
+      const res = await authAPI.me();
+      if (res.data.resultCode === ResultCodeEnum.success) {
+        return { isLoggedIn: true };
+      } else {
+        //serverAppError(res.data, dispatch);
+        return rejectWithValue(null);
+      }
+    }).finally(() => {
+      dispatch(appActions.setAppInitialized({ isInitialized: true }));
+    });
+  },
+);
+
+/*
+const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(
+  `${slice.name}/initializeApp`,
+  async (_, thunkAPI) => {
+    const { dispatch, rejectWithValue } = thunkAPI;
     try {
       const res = await authAPI.me();
       if (res.data.resultCode === ResultCodeEnum.success) {
@@ -49,6 +69,8 @@ const initializeApp = createAppAsyncThunk<{ isLoggedIn: boolean }, undefined>(
     }
   },
 );
+*/
+
 const login = createAppAsyncThunk<
   {
     isLoggedIn: boolean;
