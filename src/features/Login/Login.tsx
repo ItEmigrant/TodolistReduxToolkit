@@ -21,17 +21,25 @@ export const Login = () => {
 
   const formik = useFormik({
     validate: (values) => {
-       if (!values.email) {
-         return {
-           email: "Email is required",
-         };
-       }
-       if (!values.password) {
-         return {
-           password: "Password is required",
-         };
-       }
+      if (!values.email) {
+        return {
+          email: "Email is required",
+        };
+      } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email))
+        return {
+          email: "Invalid email address",
+        };
+
+      if (!values.password) {
+        return {
+          password: "Password is required",
+        };
+      } else if (values.password.length < 4)
+        return {
+          password: "Must be  more 3 symbols",
+        };
     },
+
     initialValues: {
       email: "",
       password: "",
