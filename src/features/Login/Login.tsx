@@ -8,12 +8,16 @@ import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, 
 import { selectLoginIsLoggedIn } from "features/Login/loginSelectors";
 import { authThunks } from "features/Login/auth-reducer";
 import { BaseResponseType } from "Common/types";
+import { LoginParamsType } from "features/Login/LoginApi";
 
-type FormValues = {
+/*type FormValues = {
   email: string;
   password: string;
   rememberMe: boolean;
-};
+};*/
+
+type FormValues = Omit<LoginParamsType, "captcha">;
+
 export const Login = () => {
   const dispatch = useAppDispatch();
 

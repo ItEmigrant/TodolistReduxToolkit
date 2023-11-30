@@ -1,6 +1,7 @@
 import { instance } from "Common/api/baseApi";
 import { BaseResponseType } from "Common/types/commonTypes";
 
+
 export const authAPI = {
   login(data: LoginParamsType) {
     return instance.post<BaseResponseType<{ userId?: number }>>("auth/login", data);
