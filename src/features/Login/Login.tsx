@@ -1,62 +1,10 @@
 import React from "react";
-import { FormikHelpers, useFormik } from "formik";
-import { useSelector } from "react-redux";
-import { AppRootStateType } from "app/store";
 import { Navigate } from "react-router-dom";
-import { useAppDispatch } from "app/useAppDispatch";
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField } from "@mui/material";
-import { selectLoginIsLoggedIn } from "features/Login/loginSelectors";
-import { authThunks } from "features/Login/auth-reducer";
-import { BaseResponseType } from "Common/types";
-import { LoginParamsType } from "features/Login/LoginApi";
-
-/*type FormValues = {
-  email: string;
-  password: string;
-  rememberMe: boolean;
-};*/
-
-type FormValues = Omit<LoginParamsType, "captcha">;
+import { useLogin } from "features/Login/lib/useLogin";
 
 export const Login = () => {
-  const dispatch = useAppDispatch();
-
-  const isLoggedIn = useSelector<AppRootStateType, boolean>(selectLoginIsLoggedIn);
-
-  const formik = useFormik({
-    validate: (values) => {
-      if (!values.email) {
-        return {
-          email: "Email is required",
-        };
-      } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email))
-        return {
-          email: "Invalid email address",
-        };
-
-      if (!values.password) {
-        return {
-          password: "Password is required",
-        };
-      } else if (values.password.length < 4)
-        return {
-          password: "Must be  more 3 symbols",
-        };
-    },
-
-    initialValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
-    },
-    onSubmit: (values, formikHelpers: FormikHelpers<FormValues>) => {
-      dispatch(authThunks.login(values))
-        .unwrap()
-        .catch((err: BaseResponseType) => {
-          err.fieldsErrors?.forEach((fieldsError) => formikHelpers.setFieldError(fieldsError.field, fieldsError.error));
-        });
-    },
-  });
+  const { formik, isLoggedIn } = useLogin();
 
   if (isLoggedIn) {
     return <Navigate to={"/"} />;

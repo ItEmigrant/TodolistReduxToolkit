@@ -3,11 +3,13 @@ import { handleServerNetworkError } from "Common/utils/NetworkError";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { clearTasksTodos } from "Common/Actions/commonActions";
-import { ResultCodeEnum, tasksThunks } from "features/TodolistsList/tasks-reducer";
-import { todolistsAPI, TodolistType } from "features/TodolistsList/todolistApi";
+import { ResultCodeEnum, tasksThunks } from "features/TodolistsList/model/tasks/tasks-reducer";
+
 import { createAppAsyncThunk } from "Common/utils/createAppAsyncThunk";
 import { serverAppError } from "Common/utils/ServerAppError";
 import { thunkTryCatch } from "Common/utils/ThunkTryCatch";
+import { TodolistType } from "features/TodolistsList/api/todolists/todolistsApi.types";
+import { todolistsAPI } from "features/TodolistsList/api/todolists/todolistApi";
 
 const slice = createSlice({
   name: "todolists",

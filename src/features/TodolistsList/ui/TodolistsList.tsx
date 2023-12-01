@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { AppRootStateType } from "app/store";
-import { FilterValuesType, TodolistDomainType, todolistsActions, todoListsThunks } from "./todolists-reducer";
-import { TasksStateType, tasksThunks } from "./tasks-reducer";
+import { FilterValuesType, TodolistDomainType, todolistsActions, todoListsThunks } from "features/TodolistsList/model/todolists/todolists-reducer";
+import { TasksStateType, tasksThunks } from "features/TodolistsList/model/tasks/tasks-reducer";
 import { Grid, Paper } from "@mui/material";
 import { AddItemForm } from "Common/components/AddItemForm/AddItemForm";
-import { Todolist } from "./Todolist/Todolist";
+import { Todolist } from "features/TodolistsList/ui/Todolist/Todolist";
 import { Navigate } from "react-router-dom";
 import { useAppDispatch } from "app/useAppDispatch";
 import {
   selectTodoLists,
   selectTodosIsLoggedIn,
   selectTodosTasks,
-} from "features/TodolistsList/todolistsListsSelectors";
+} from "features/TodolistsList/model/todolists/todolistsListsSelectors";
 import { TaskStatuses } from "Common/Enum/enum";
 import { useActions } from "Common/hooks/useActions";
 

@@ -5,7 +5,7 @@ import { clearTasksTodos } from "Common/Actions/commonActions";
 import { serverAppError } from "Common/utils/ServerAppError";
 import { authAPI, LoginParamsType } from "features/Login/LoginApi";
 import { createAppAsyncThunk } from "Common/utils/createAppAsyncThunk";
-import { ResultCodeEnum } from "features/TodolistsList/tasks-reducer";
+import { ResultCodeEnum } from "features/TodolistsList/model/tasks/tasks-reducer";
 import { thunkTryCatch } from "Common/utils/ThunkTryCatch";
 
 const slice = createSlice({
