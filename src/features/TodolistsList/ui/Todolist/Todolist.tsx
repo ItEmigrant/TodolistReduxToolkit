@@ -9,33 +9,26 @@ import { Delete } from "@mui/icons-material";
 
 import { TaskStatuses } from "Common/Enum/enum";
 import { TaskType } from "features/TodolistsList/api/tasks/tasksApi.types";
+import { useActions } from "Common/hooks/useActions";
+import { tasksThunks } from "features/TodolistsList/model/tasks/tasks-reducer";
 
-type PropsType = {
+type Props = {
   todolist: TodolistDomainType;
   tasks: TaskType[];
   changeFilter: (value: FilterValuesType, todolistId: string) => void;
-  addTask: (title: string, todolistId: string) => void;
   removeTodolist: (id: string) => void;
   changeTodolistTitle: (id: string, newTitle: string) => void;
   demo?: boolean;
 };
 
-export const Todolist = React.memo(function ({ demo = false, ...props }: PropsType) {
-  //const dispatch = useAppDispatch()
+export const Todolist = React.memo(function ({ demo = false, ...props }: Props) {
+  const { addTask } = useActions(tasksThunks);
 
-  /* useEffect(() => {
-     if (demo) {
-       return
-     }
-     const thunk = fetchTasksTC(props.todolist.id)
-     dispatch(thunk)
-   }, [])*/
-
-  const addTask = useCallback(
+  const addTaskCallback = useCallback(
     (title: string) => {
-      props.addTask(title, props.todolist.id);
+      addTask({ title, todolistId: props.todolist.id });
     },
-    [props.addTask, props.todolist.id],
+    [props.todolist.id],
   );
 
   const removeTodolist = () => {
@@ -78,7 +71,7 @@ export const Todolist = React.memo(function ({ demo = false, ...props }: PropsTy
           <Delete />
         </IconButton>
       </h3>
-      <AddItemForm addItem={addTask} disabled={props.todolist.entityStatus === "loading"} />
+      <AddItemForm addItem={addTaskCallback} disabled={props.todolist.entityStatus === "loading"} />
       <div>{tasksForTodolist?.map((t) => <Task key={t.id} task={t} todolistId={props.todolist.id} />)}</div>
       <div style={{ paddingTop: "10px" }}>
         <Button

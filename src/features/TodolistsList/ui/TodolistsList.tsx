@@ -7,7 +7,7 @@ import {
   todolistsActions,
   todoListsThunks,
 } from "features/TodolistsList/model/todolists/todolists-reducer";
-import { TasksStateType, tasksThunks } from "features/TodolistsList/model/tasks/tasks-reducer";
+import { TasksStateType } from "features/TodolistsList/model/tasks/tasks-reducer";
 import { Grid, Paper } from "@mui/material";
 import { AddItemForm } from "Common/components/AddItemForm/AddItemForm";
 import { Todolist } from "features/TodolistsList/ui/Todolist/Todolist";
@@ -37,10 +37,6 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
       return;
     }
     fetchTodolist();
-  }, []);
-
-  const addTask = useCallback(function (title: string, todolistId: string) {
-    dispatch(tasksThunks.addTask({ title, todolistId }));
   }, []);
 
   const changeFilter = useCallback(function (filter: FilterValuesType, id: string) {
@@ -82,7 +78,6 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
                   todolist={tl}
                   tasks={allTodolistTasks}
                   changeFilter={changeFilter}
-                  addTask={addTask}
                   removeTodolist={removeTodolistCB}
                   changeTodolistTitle={changeTodolistTitleCB}
                   demo={demo}
