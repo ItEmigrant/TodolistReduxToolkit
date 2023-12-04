@@ -1,12 +1,7 @@
 import React, { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { AppRootStateType } from "app/store";
-import {
-  FilterValuesType,
-  TodolistDomainType,
-  todolistsActions,
-  todoListsThunks,
-} from "features/TodolistsList/model/todolists/todolists-reducer";
+import { TodolistDomainType, todoListsThunks } from "features/TodolistsList/model/todolists/todolists-reducer";
 import { TasksStateType } from "features/TodolistsList/model/tasks/tasks-reducer";
 import { Grid, Paper } from "@mui/material";
 import { AddItemForm } from "Common/components/AddItemForm/AddItemForm";
@@ -30,25 +25,13 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   const isLoggedIn = useSelector<AppRootStateType, boolean>(selectTodosIsLoggedIn);
 
   const dispatch = useAppDispatch();
-  const { addTodolist, removeTodolist, fetchTodolist, changeTodolistTitle } = useActions(todoListsThunks);
+  const { addTodolist, fetchTodolist} = useActions(todoListsThunks);
 
   useEffect(() => {
     if (demo || !isLoggedIn) {
       return;
     }
     fetchTodolist();
-  }, []);
-
-  const changeFilter = useCallback(function (filter: FilterValuesType, id: string) {
-    dispatch(todolistsActions.changeTodolistFilter({ id, filter }));
-  }, []);
-
-  const removeTodolistCB = useCallback(function (id: string) {
-    removeTodolist({ id });
-  }, []);
-
-  const changeTodolistTitleCB = useCallback(function (id: string, title: string) {
-    changeTodolistTitle({ id, title });
   }, []);
 
   const addTodolistCB = useCallback(
@@ -74,14 +57,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
           return (
             <Grid item key={tl.id}>
               <Paper style={{ padding: "10px" }}>
-                <Todolist
-                  todolist={tl}
-                  tasks={allTodolistTasks}
-                  changeFilter={changeFilter}
-                  removeTodolist={removeTodolistCB}
-                  changeTodolistTitle={changeTodolistTitleCB}
-                  demo={demo}
-                />
+                <Todolist todolist={tl} tasks={allTodolistTasks} demo={demo} />
               </Paper>
             </Grid>
           );
