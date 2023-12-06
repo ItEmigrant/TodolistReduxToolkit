@@ -138,8 +138,8 @@ const addTodolist = createAppAsyncThunk<
     if (res.data.resultCode === ResultCodeEnum.success) {
       return { todolist: res.data.data.item };
     } else {
-      serverAppError(res.data, dispatch);
-      return rejectWithValue(null);
+      serverAppError(res.data, dispatch, false);
+      return rejectWithValue(res.data);
     }
   });
 });

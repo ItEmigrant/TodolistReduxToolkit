@@ -131,8 +131,8 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, { todolistId: string; ti
       if (res.data.resultCode === ResultCodeEnum.success) {
         return { task: res.data.data.item };
       } else {
-        serverAppError(res.data, dispatch);
-        return rejectWithValue(null);
+        serverAppError(res.data, dispatch, false);
+        return rejectWithValue(res.data);
       }
     });
   },

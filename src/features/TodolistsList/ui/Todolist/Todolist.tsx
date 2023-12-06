@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { memo, useCallback, useEffect } from "react";
 import { AddItemForm } from "Common/components/AddItemForm/AddItemForm";
 
 import { TodolistDomainType } from "features/TodolistsList/model/todolists/todolists-reducer";
@@ -12,30 +12,27 @@ import TodolistTitle from "features/TodolistsList/ui/Todolist/TodolistTitle/Todo
 type Props = {
   todolist: TodolistDomainType;
   tasks: TaskType[];
-  demo?: boolean;
 };
 
-export const Todolist = React.memo(function ({ demo = false, ...props }: Props) {
+export const Todolist = memo(function ({ todolist, tasks }: Props) {
   const { addTask, fetchTasks } = useActions(tasksThunks);
-
   useEffect(() => {
-    fetchTasks(props.todolist.id);
+    fetchTasks(todolist.id);
   }, []);
 
   const addTaskCallback = useCallback(
     (title: string) => {
-      addTask({ title, todolistId: props.todolist.id });
+     return addTask({ title, todolistId: todolist.id }).unwrap();
     },
-    [props.todolist.id],
+    [todolist.id],
   );
-
   return (
     <div>
-      <TodolistTitle todolist={props.todolist}/>
-      <AddItemForm addItem={addTaskCallback} disabled={props.todolist.entityStatus === "loading"} />
-      <Tasks todolist={props.todolist} tasks={props.tasks} />
+      <TodolistTitle todolist={todolist} />
+      <AddItemForm addItem={addTaskCallback} disabled={todolist.entityStatus === "loading"} />
+      <Tasks todolist={todolist} tasks={tasks} />
       <div style={{ paddingTop: "10px" }}>
-        <FilterTaskButtons todolist={props.todolist} />
+        <FilterTaskButtons todolist={todolist} />
       </div>
     </div>
   );

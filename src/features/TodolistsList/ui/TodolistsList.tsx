@@ -25,7 +25,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   const isLoggedIn = useSelector<AppRootStateType, boolean>(selectTodosIsLoggedIn);
 
   const dispatch = useAppDispatch();
-  const { addTodolist, fetchTodolist} = useActions(todoListsThunks);
+  const { addTodolist, fetchTodolist } = useActions(todoListsThunks);
 
   useEffect(() => {
     if (demo || !isLoggedIn) {
@@ -36,7 +36,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
 
   const addTodolistCB = useCallback(
     (title: string) => {
-      addTodolist({ title });
+     return addTodolist({ title }).unwrap();
     },
     [dispatch],
   );
@@ -57,7 +57,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
           return (
             <Grid item key={tl.id}>
               <Paper style={{ padding: "10px" }}>
-                <Todolist todolist={tl} tasks={allTodolistTasks} demo={demo} />
+                <Todolist todolist={tl} tasks={allTodolistTasks} />
               </Paper>
             </Grid>
           );

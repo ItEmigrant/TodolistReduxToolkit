@@ -1,40 +1,41 @@
-import React, { ChangeEvent, KeyboardEvent, useState } from "react"
-import { IconButton, TextField } from "@mui/material"
-import { AddBox } from "@mui/icons-material"
+import React, { ChangeEvent, KeyboardEvent, useState } from "react";
+import { IconButton, TextField } from "@mui/material";
+import { AddBox } from "@mui/icons-material";
+import { BaseResponseType } from "Common/types";
 
 type AddItemFormPropsType = {
-  addItem: (title: string) => void
-  disabled?: boolean
-}
+  addItem: (title: string) => Promise<unknown>;
+  disabled?: boolean;
+};
 
-export const AddItemForm = React.memo(function ({
-  addItem,
-  disabled = false,
-}: AddItemFormPropsType) {
-  let [title, setTitle] = useState("")
-  let [error, setError] = useState<string | null>(null)
+export const AddItemForm = React.memo(function ({ addItem, disabled = false }: AddItemFormPropsType) {
+  let [title, setTitle] = useState("");
+  let [error, setError] = useState<string | null>(null);
 
   const addItemHandler = () => {
     if (title.trim() !== "") {
-      addItem(title)
-      setTitle("")
+      addItem(title).then(() => {
+        setTitle("");
+      }).catch((err:BaseResponseType)=>{
+       setError(err.messages[0])
+      });
     } else {
-      setError("Title is required")
+      setError("Title is required");
     }
-  }
+  };
 
   const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setTitle(e.currentTarget.value)
-  }
+    setTitle(e.currentTarget.value);
+  };
 
   const onKeyPressHandler = (e: KeyboardEvent<HTMLInputElement>) => {
     if (error !== null) {
-      setError(null)
+      setError(null);
     }
     if (e.charCode === 13) {
-      addItemHandler()
+      addItemHandler();
     }
-  }
+  };
 
   return (
     <div>
@@ -52,5 +53,5 @@ export const AddItemForm = React.memo(function ({
         <AddBox />
       </IconButton>
     </div>
-  )
-})
+  );
+});

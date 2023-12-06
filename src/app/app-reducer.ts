@@ -21,6 +21,9 @@ const slice = createSlice({
       state.isInitialized = action.payload.isInitialized;
     },
   },
+/*  extraReducers: (builder) => {
+    builder.addMatcher(()=>{}, (state, action)=>{})
+  }*/
 });
 
 export const appReducer = slice.reducer;
