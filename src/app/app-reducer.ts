@@ -1,4 +1,4 @@
-import { AnyAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AnyAction, createSlice, isFulfilled, isPending, isRejected, PayloadAction } from "@reduxjs/toolkit";
 
 const slice = createSlice({
   name: "app",
@@ -22,29 +22,17 @@ const slice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addMatcher(
-      (action: AnyAction) => {
-        return action.type.endsWith("/pending");
-      },
-      (state) => {
+    builder
+      .addMatcher(isPending, (state) => {
         state.status = "loading";
-      },
-    ).addMatcher(
-      (action: AnyAction) => {
-        return action.type.endsWith("/rejected");
-      },
-      (state) => {
+      })
+      .addMatcher(isRejected, (state, action: AnyAction) => {
         state.status = "failed";
-      },
-    ).addMatcher(
-      (action: AnyAction) => {
-        return action.type.endsWith("/fulfilled");
-      },
-      (state) => {
+        state.error = action.error.message
+      })
+      .addMatcher(isFulfilled, (state) => {
         state.status = "succeeded";
-      },
-    )
-    ;
+      });
   },
 });
 

@@ -1,5 +1,5 @@
 import { handleServerNetworkError } from "Common/utils/NetworkError";
-import { AnyAction, createSlice } from "@reduxjs/toolkit";
+import { AnyAction, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { appActions } from "app/app-reducer";
 import { clearTasksTodos } from "Common/Actions/commonActions";
 import { serverAppError } from "Common/utils/ServerAppError";
@@ -17,11 +17,11 @@ const slice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       (action: AnyAction) => {
-        return (
-          action.type === "auth/login/fulfilled" ||
-          action.type === "auth/logout/fulfilled" ||
-          action.type === "auth/initializeApp/fulfilled"
-        );
+        return isAnyOf(
+          authThunks.login.fulfilled,
+          authThunks.logout.fulfilled,
+          authThunks.initializeApp.fulfilled,
+        )(action);
       },
       (state, action) => {
         state.isLoggedIn = action.payload.isLoggedIn;
