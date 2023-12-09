@@ -7,7 +7,6 @@ import { createAppAsyncThunk } from "Common/utils/createAppAsyncThunk";
 import { serverAppError } from "Common/utils/ServerAppError";
 
 import { TaskPriorities, TaskStatuses } from "Common/Enum/enum";
-import { thunkTryCatch } from "Common/utils/ThunkTryCatch";
 import { TaskType, UpdateTaskModelType } from "features/TodolistsList/api/tasks/tasksApi.types";
 
 import { ArgUpdateTask } from "features/TodolistsList/api/todolists/todolistsApi.types";
@@ -125,7 +124,7 @@ const removeTask = createAppAsyncThunk<{ taskId: string; todolistId: string }, {
 const addTask = createAppAsyncThunk<{ task: TaskType }, { todolistId: string; title: string }>(
   `${slice.name}/addTasks`,
   async (arg, thunkAPI) => {
-    const { dispatch, rejectWithValue } = thunkAPI;
+    const { rejectWithValue } = thunkAPI;
     const res = await tasksApi.createTask(arg.todolistId, arg.title);
     if (res.data.resultCode === ResultCodeEnum.success) {
       return { task: res.data.data.item };
