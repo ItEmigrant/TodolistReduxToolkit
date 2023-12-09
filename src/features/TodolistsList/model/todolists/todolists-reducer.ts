@@ -90,7 +90,6 @@ const removeTodolist = createAppAsyncThunk<string, { id: string }>(
   `${slice.name}/removeTodolist`,
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
-
     dispatch(todolistsActions.changeTodolistEntityStatus({ id: arg.id, entityStatus: "loading" }));
     const res = await todolistsAPI.deleteTodolist(arg.id).finally(() => {
       dispatch(todolistsActions.changeTodolistEntityStatus({ id: arg.id, entityStatus: "loading" }));
@@ -125,7 +124,7 @@ const changeTodolistTitle = createAppAsyncThunk<{ id: string; title: string }, {
     if (res.data.resultCode === ResultCodeEnum.success) {
       return { id: arg.id, title: arg.title };
     } else {
-      return rejectWithValue(null);
+      return rejectWithValue(res.data);
     }
   },
 );

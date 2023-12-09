@@ -126,15 +126,12 @@ const addTask = createAppAsyncThunk<{ task: TaskType }, { todolistId: string; ti
   `${slice.name}/addTasks`,
   async (arg, thunkAPI) => {
     const { dispatch, rejectWithValue } = thunkAPI;
-    return thunkTryCatch(thunkAPI, async () => {
-      const res = await tasksApi.createTask(arg.todolistId, arg.title);
-      if (res.data.resultCode === ResultCodeEnum.success) {
-        return { task: res.data.data.item };
-      } else {
-        serverAppError(res.data, dispatch, false);
-        return rejectWithValue(res.data);
-      }
-    });
+    const res = await tasksApi.createTask(arg.todolistId, arg.title);
+    if (res.data.resultCode === ResultCodeEnum.success) {
+      return { task: res.data.data.item };
+    } else {
+      return rejectWithValue(res.data);
+    }
   },
 );
 
@@ -188,4 +185,3 @@ export type UpdateDomainTaskModelType = {
 };
 
 export type TasksStateType = Record<string, TaskType[]>;
-
