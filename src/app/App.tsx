@@ -32,7 +32,6 @@ function App({ demo = false }: PropsType) {
   const isInitialized = useSelector<AppRootStateType, boolean>(selectIsInitialized);
   const isLoggedIn = useSelector<AppRootStateType, boolean>(selectIsLoggedIn);
 
-  
   const { initializeApp, logout } = useActions(authThunks);
 
   useEffect(() => {
@@ -46,14 +45,7 @@ function App({ demo = false }: PropsType) {
 
   if (!isInitialized) {
     return (
-      <div
-        style={{
-          position: "fixed",
-          top: "30%",
-          textAlign: "center",
-          width: "100%",
-        }}
-      >
+      <div className="circularProgress">
         <CircularProgress />
       </div>
     );
