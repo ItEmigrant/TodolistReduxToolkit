@@ -9,12 +9,12 @@ import FilterTaskButtons from "features/TodolistsList/ui/Todolist/FilterTaskButt
 import Tasks from "features/TodolistsList/ui/Todolist/Tasks/Tasks";
 import TodolistTitle from "features/TodolistsList/ui/Todolist/TodolistTitle/TodolistTitle";
 
-type Props = {
+type PropsType = {
   todolist: TodolistDomainType;
   tasks: TaskType[];
 };
 
-export const Todolist = memo(function ({ todolist, tasks }: Props) {
+export const Todolist = memo(function ({ todolist, tasks }: PropsType) {
   const { addTask, fetchTasks } = useActions(tasksThunks);
   useEffect(() => {
     fetchTasks(todolist.id);

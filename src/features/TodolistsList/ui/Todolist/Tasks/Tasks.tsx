@@ -4,11 +4,11 @@ import { TaskStatuses } from "Common/Enum";
 import { TaskType } from "features/TodolistsList/api/tasks/tasksApi.types";
 import { TodolistDomainType } from "features/TodolistsList/model/todolists/todolists-reducer";
 
-type Props = {
+type PropsType = {
   tasks: TaskType[];
   todolist: TodolistDomainType;
 };
-const Tasks = ({ tasks, todolist }: Props) => {
+const Tasks = ({ tasks, todolist }: PropsType) => {
   let tasksForTodolist = tasks;
 
   if (todolist.filter === "active") {
