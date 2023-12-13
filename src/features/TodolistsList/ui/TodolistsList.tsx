@@ -15,11 +15,7 @@ import {
 } from "features/TodolistsList/model/todolists/todolistsListsSelectors";
 import { useActions } from "Common/hooks/useActions";
 
-type PropsType = {
-  demo?: boolean;
-};
-
-export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
+export const TodolistsList: React.FC = () => {
   const todolists = useSelector<AppRootStateType, Array<TodolistDomainType>>(selectTodoLists);
   const tasks = useSelector<AppRootStateType, TasksStateType>(selectTodosTasks);
   const isLoggedIn = useSelector<AppRootStateType, boolean>(selectTodosIsLoggedIn);
@@ -28,7 +24,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
   const { addTodolist, fetchTodolist } = useActions(todoListsThunks);
 
   useEffect(() => {
-    if (demo || !isLoggedIn) {
+    if (!isLoggedIn) {
       return;
     }
     fetchTodolist();
@@ -36,7 +32,7 @@ export const TodolistsList: React.FC<PropsType> = ({ demo = false }) => {
 
   const addTodolistCB = useCallback(
     (title: string) => {
-     return addTodolist({ title }).unwrap();
+      return addTodolist({ title }).unwrap();
     },
     [dispatch],
   );
