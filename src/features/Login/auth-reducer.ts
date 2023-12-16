@@ -3,7 +3,7 @@ import { AnyAction, createSlice, isAnyOf } from "@reduxjs/toolkit";
 import { appActions } from "app/app-reducer";
 import { clearTasksTodos } from "Common/Actions/commonActions";
 import { serverAppError } from "Common/utils/ServerAppError";
-import { authAPI, LoginParamsType } from "features/Login/LoginApi";
+import { authAPI, LoginParamsType, securityAPI } from "features/Login/LoginApi";
 import { createAppAsyncThunk } from "Common/utils/createAppAsyncThunk";
 import { ResultCodeEnum } from "features/TodolistsList/model/tasks/tasks-reducer";
 
@@ -11,8 +11,13 @@ const slice = createSlice({
   name: "auth",
   initialState: {
     isLoggedIn: false,
+    captchaUrl: null,
   },
-  reducers: {},
+  reducers: {
+    updateCaptchaUrl: (state, action) => {
+      state.captchaUrl = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addMatcher(
       (action: AnyAction) => {
@@ -89,6 +94,22 @@ const logout = createAppAsyncThunk<
   }
 });
 
-export const authReducer = slice.reducer;
+const getCaptchaUrl = createAppAsyncThunk<
+  {
+    captchaUrl: string;
+  },
+  LoginParamsType
+>(`${slice.name}/getCaptchaUrl`, async (_, thunkAPI) => {
+  const { rejectWithValue } = thunkAPI;
+  const res = await securityAPI.getCaptchaUrl();
+  if (res.data.data.url) {
+    return { captchaUrl: res.data.data.url };
+  } else {
+    return rejectWithValue(res.data);
+  }
+});
 
-export const authThunks = { login, logout, initializeApp };
+export const authReducer = slice.reducer;
+//export const { updateCaptchaUrl } = slice.actions;
+
+export const authThunks = { login, logout, initializeApp, getCaptchaUrl };
