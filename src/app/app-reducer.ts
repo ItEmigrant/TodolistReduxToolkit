@@ -32,9 +32,11 @@ const slice = createSlice({
         if (action.payload) {
           if (action.type.includes("addTodolist") || action.type.includes("addTask") || action.type.includes("initializeApp")) return;
 
-          state.error = action.payload.messages[0];
+          if(action.payload && action.payload.messages){
+            state.error = action.payload.messages[0];
+          }
         } else {
-          state.error = action.error.message ? action.error.message : "Some Error!";
+          state.error = action.error && action.error.message ? action.error.message : "Some Error!";
         }
       })
       .addMatcher(isFulfilled, (state) => {

@@ -2,9 +2,12 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { Button, Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, TextField } from "@mui/material";
 import { useLogin } from "features/Login/lib/useLogin";
+import { useSelector } from "react-redux";
+import { AppRootStateType } from "app/store";
 
 export const Login = () => {
   const { formik, isLoggedIn } = useLogin();
+  const captchaUrl = useSelector((state: AppRootStateType) => state.auth.captchaUrl);
 
   if (isLoggedIn) {
     return <Navigate to={"/"} />;
@@ -35,6 +38,12 @@ export const Login = () => {
                 label={"Remember me"}
                 control={<Checkbox {...formik.getFieldProps("rememberMe")} checked={formik.values.rememberMe} />}
               />
+              {captchaUrl && <img src={captchaUrl} alt="captcha" />}
+
+              {captchaUrl && (
+                <TextField label="Type symbols ..." margin="normal" {...formik.getFieldProps("captcha")} />
+              )}
+
               <Button type={"submit"} variant={"contained"} color={"primary"}>
                 Login
               </Button>

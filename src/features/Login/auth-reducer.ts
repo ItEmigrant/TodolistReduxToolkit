@@ -11,14 +11,13 @@ const slice = createSlice({
   name: "auth",
   initialState: {
     isLoggedIn: false,
-    captchaUrl: null,
+    captchaUrl: null as string | null,
   },
-  reducers: {
-    updateCaptchaUrl: (state, action) => {
-      state.captchaUrl = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(getCaptchaUrl.fulfilled, (state, action) => {
+      state.captchaUrl = action.payload.captchaUrl;
+    });
     builder.addMatcher(
       (action: AnyAction) => {
         return isAnyOf(
@@ -61,11 +60,14 @@ const login = createAppAsyncThunk<
   },
   LoginParamsType
 >(`${slice.name}/login`, async (arg, thunkAPI) => {
-  const { rejectWithValue } = thunkAPI;
+  const { dispatch, rejectWithValue } = thunkAPI;
   const res = await authAPI.login(arg);
   if (res.data.resultCode === ResultCodeEnum.success) {
     return { isLoggedIn: true };
   } else {
+    if (res.data.resultCode === ResultCodeEnum.captcha) {
+      dispatch(getCaptchaUrl());
+    }
     return rejectWithValue(res.data);
   }
 });
@@ -98,12 +100,13 @@ const getCaptchaUrl = createAppAsyncThunk<
   {
     captchaUrl: string;
   },
-  LoginParamsType
+  undefined
 >(`${slice.name}/getCaptchaUrl`, async (_, thunkAPI) => {
   const { rejectWithValue } = thunkAPI;
   const res = await securityAPI.getCaptchaUrl();
-  if (res.data.data.url) {
-    return { captchaUrl: res.data.data.url };
+
+  if (res.data) {
+    return { captchaUrl: res.data.url };
   } else {
     return rejectWithValue(res.data);
   }

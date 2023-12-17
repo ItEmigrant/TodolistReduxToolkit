@@ -15,7 +15,7 @@ export const authAPI = {
 
 export const securityAPI = {
   getCaptchaUrl() {
-    return instance.get<BaseResponseType<{ url: string }>>("security/get-captcha-url");
+    return instance.get<CaptchaResponseType>("security/get-captcha-url");
   },
 };
 
@@ -24,5 +24,8 @@ export type LoginParamsType = {
   email: string;
   password: string;
   rememberMe: boolean;
-  captcha?: string;
+  captcha: string;
+};
+export type CaptchaResponseType = {
+  url: string;
 };

@@ -36,9 +36,11 @@ export const useLogin = () => {
       email: "",
       password: "",
       rememberMe: false,
+      captcha: ''
+
     },
     onSubmit: (values, formikHelpers: FormikHelpers<FormValues>) => {
-      dispatch(authThunks.login(values))
+      dispatch(authThunks.login(values as LoginParamsType))
         .unwrap()
         .catch((err: BaseResponseType) => {
           err.fieldsErrors?.forEach((fieldsError) => formikHelpers.setFieldError(fieldsError.field, fieldsError.error));
@@ -49,4 +51,4 @@ export const useLogin = () => {
 };
 
 //types
-type FormValues = Omit<LoginParamsType, "captcha">;
+type FormValues = LoginParamsType;
