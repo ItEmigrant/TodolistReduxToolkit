@@ -39,19 +39,13 @@ const initializeApp = createAppAsyncThunk<
     isLoggedIn: boolean;
   },
   undefined
->(`${slice.name}/initializeApp`, async (_, thunkAPI) => {
-  const { rejectWithValue } = thunkAPI;
-
+>(`${slice.name}/initializeApp`, async (_, { rejectWithValue }) => {
   const res = await authAPI.me();
   if (res.data.resultCode === ResultCodeEnum.success) {
     return { isLoggedIn: true };
   } else {
-    //serverAppError(res.data, dispatch);
     return rejectWithValue(res.data);
   }
-  /*.finally(() => {
-     dispatch(appActions.setAppInitialized({ isInitialized: true }));
-   });*/
 });
 
 const login = createAppAsyncThunk<
@@ -113,6 +107,5 @@ const getCaptchaUrl = createAppAsyncThunk<
 });
 
 export const authReducer = slice.reducer;
-//export const { updateCaptchaUrl } = slice.actions;
 
 export const authThunks = { login, logout, initializeApp, getCaptchaUrl };

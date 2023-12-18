@@ -1,4 +1,4 @@
-import { appActions, RequestStatusType } from "app/app-reducer";
+import { RequestStatusType } from "app/app-reducer";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { clearTasksTodos } from "Common/Actions/commonActions";
@@ -92,22 +92,19 @@ const removeTodolist = createAppAsyncThunk<string, { id: string }>(
     const { dispatch, rejectWithValue } = thunkAPI;
     dispatch(todolistsActions.changeTodolistEntityStatus({ id: arg.id, entityStatus: "loading" }));
     const res = await todolistsAPI.deleteTodolist(arg.id).finally(() => {
-      dispatch(todolistsActions.changeTodolistEntityStatus({ id: arg.id, entityStatus: "loading" }));
+      dispatch(todolistsActions.changeTodolistEntityStatus({ id: arg.id, entityStatus: "idle" }));
     });
     if (res.data.resultCode === ResultCodeEnum.success) {
-      dispatch(appActions.setAppStatus({ status: "succeeded" }));
       return arg.id;
     } else {
-      // serverAppError(res.data, dispatch);
-      return rejectWithValue(null);
+      return rejectWithValue(res.data);
     }
   },
 );
 
 const addTodolist = createAppAsyncThunk<{ todolist: TodolistType }, { title: string }>(
   `${slice.name}/addTodolist`,
-  async (arg, thunkAPI) => {
-    const { rejectWithValue } = thunkAPI;
+  async (arg, { rejectWithValue }) => {
     const res = await todolistsAPI.createTodolist(arg.title);
     if (res.data.resultCode === ResultCodeEnum.success) {
       return { todolist: res.data.data.item };
@@ -119,7 +116,7 @@ const addTodolist = createAppAsyncThunk<{ todolist: TodolistType }, { title: str
 
 const changeTodolistTitle = createAppAsyncThunk<{ id: string; title: string }, { id: string; title: string }>(
   `${slice.name}/changeTodolistTitle`,
-  async (arg, {rejectWithValue}) => {
+  async (arg, { rejectWithValue }) => {
     const res = await todolistsAPI.updateTodolist(arg.id, arg.title);
     if (res.data.resultCode === ResultCodeEnum.success) {
       return { id: arg.id, title: arg.title };

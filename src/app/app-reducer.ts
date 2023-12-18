@@ -30,13 +30,16 @@ const slice = createSlice({
       .addMatcher(isRejected, (state, action: AnyAction) => {
         state.status = "failed";
         if (action.payload) {
-          if (action.type.includes("addTodolist") || action.type.includes("addTask") || action.type.includes("initializeApp")) return;
+          if (
+            action.type.includes("addTodolist") ||
+            action.type.includes("addTask") ||
+            action.type.includes("initializeApp")
+          )
+            return;
 
-          if(action.payload && action.payload.messages){
-            state.error = action.payload.messages[0];
-          }
+          state.error = action.payload.messages[0];
         } else {
-          state.error = action.error && action.error.message ? action.error.message : "Some Error!";
+          state.error = action.error.message ? action.error.message : "Some Error!";
         }
       })
       .addMatcher(isFulfilled, (state) => {
