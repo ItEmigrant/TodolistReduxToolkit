@@ -33,7 +33,9 @@ const slice = createSlice({
           if (
             action.type.includes("addTodolist") ||
             action.type.includes("addTask") ||
-            action.type.includes("initializeApp")
+            action.type.includes("initializeApp") ||
+            action.type.includes('removeTask') ||
+            action.type.includes('fetchTasks')
           )
             return;
 

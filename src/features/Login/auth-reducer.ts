@@ -1,11 +1,9 @@
-import { handleServerNetworkError } from "Common/utils/NetworkError";
 import { AnyAction, createSlice, isAnyOf } from "@reduxjs/toolkit";
-import { appActions } from "app/app-reducer";
-import { clearTasksTodos } from "Common/Actions/commonActions";
 import { serverAppError } from "Common/utils/ServerAppError";
 import { authAPI, LoginParamsType, securityAPI } from "features/Login/LoginApi";
 import { createAppAsyncThunk } from "Common/utils/createAppAsyncThunk";
 import { ResultCodeEnum } from "features/TodolistsList/model/tasks/tasks-reducer";
+import { clearTasksTodos } from "Common/Actions/commonActions";
 
 const slice = createSlice({
   name: "auth",
@@ -73,20 +71,14 @@ const logout = createAppAsyncThunk<
   undefined
 >(`${slice.name}/logout`, async (_, thunkAPI) => {
   const { dispatch, rejectWithValue } = thunkAPI;
-  try {
-    dispatch(appActions.setAppStatus({ status: "loading" }));
-    const res = await authAPI.logout();
-    if (res.data.resultCode === ResultCodeEnum.success) {
-      dispatch(appActions.setAppStatus({ status: "succeeded" }));
-      dispatch(clearTasksTodos());
-      return { isLoggedIn: false };
-    } else {
-      serverAppError(res.data, dispatch);
-      return rejectWithValue(null);
-    }
-  } catch (err) {
-    handleServerNetworkError(err, dispatch);
-    return rejectWithValue(null);
+
+  const res = await authAPI.logout();
+  if (res.data.resultCode === ResultCodeEnum.success) {
+    dispatch(clearTasksTodos());
+    return { isLoggedIn: false };
+  } else {
+    serverAppError(res.data, dispatch);
+    return rejectWithValue(res.data);
   }
 });
 
@@ -98,7 +90,6 @@ const getCaptchaUrl = createAppAsyncThunk<
 >(`${slice.name}/getCaptchaUrl`, async (_, thunkAPI) => {
   const { rejectWithValue } = thunkAPI;
   const res = await securityAPI.getCaptchaUrl();
-
   if (res.data) {
     return { captchaUrl: res.data.url };
   } else {

@@ -19,3 +19,9 @@ test("correct status should be set", () => {
   const endState = appReducer(startState, appActions.setAppStatus({ status: "loading" }));
   expect(endState.status).toBe("loading");
 });
+
+test("correct initialization should be set ", () => {
+  const endState = appReducer(startState, appActions.setAppInitialized({ isInitialized: true }));
+  expect(startState.isInitialized).toBe(false);
+  expect(endState.isInitialized).toBe(true);
+});
