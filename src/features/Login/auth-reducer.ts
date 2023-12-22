@@ -18,11 +18,7 @@ const slice = createSlice({
     });
     builder.addMatcher(
       (action: AnyAction) => {
-        return isAnyOf(
-          authThunks.login.fulfilled,
-          authThunks.logout.fulfilled,
-          authThunks.initializeApp.fulfilled,
-        )(action);
+        return isAnyOf(login.fulfilled, logout.fulfilled, initializeApp.fulfilled)(action);
       },
       (state, action) => {
         state.isLoggedIn = action.payload.isLoggedIn;
