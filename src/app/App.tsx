@@ -10,7 +10,7 @@ import { authThunks } from "features/Login/auth-reducer";
 import { useActions } from "Common/hooks/useActions";
 import AppToolBar from "app/AppToolBar";
 import AppRouting from "app/AppRouting";
-import * as process from "process";
+
 
 function App() {
   const isInitialized = useSelector<AppRootStateType, boolean>(selectIsInitialized);
