@@ -10,6 +10,7 @@ const AppRouting = () => {
       <Routes>
         <Route path={"/"} element={<TodolistsList />} />
         <Route path={"/login"} element={<Login />} />
+        <Route path="/TodolistReduxToolkit" element={<Login />} />
       </Routes>
     </Container>
   );
